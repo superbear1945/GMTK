@@ -8,6 +8,7 @@ public class Shoot : MonoBehaviour
     private PlayerInput _playerInput;
     private InputAction _shootAction;
     public GameObject arm;
+    public GameObject leg;
 
     void Awake()
     {
