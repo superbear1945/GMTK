@@ -15,6 +15,10 @@ public class Shoot : MonoBehaviour
     [SerializeField, Tooltip("子弹生成与玩家的距离"), Header("射击设置")]
     float _instanceOffset = 0.5f; // 实例化偏移量
 
+    [SerializeField, Tooltip("肢体数量管理")]
+    int _armCount = 2;
+    int _legCount = 2;
+
     void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
@@ -49,13 +53,15 @@ public class Shoot : MonoBehaviour
         Vector2 direction = playerTransform.right.normalized;
         Vector2 instancePosition = playerTransform.position + (Vector3)direction * _instanceOffset; // 在玩家前方生成
 
-        if (isLeft == true)
+        if (isLeft == true && _armCount > 0)
         {
+            _armCount--; //减少手臂数量
             var armInstance = Instantiate(arm, instancePosition, Quaternion.identity);
             armInstance.transform.up = direction; // 设置朝向
         }
-        else
+        else if(isLeft == false && _legCount > 0)
         {
+            _legCount--; //减少腿部数量
             var armInstance = Instantiate(leg, instancePosition, Quaternion.identity);
             armInstance.transform.up = direction; // 设置朝向
         }

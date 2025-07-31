@@ -8,7 +8,7 @@ public abstract class BulletBase : MonoBehaviour
     public float lifetime = 1f; // 子弹生命周期
     protected Rigidbody2D _rb2d;
     protected bool _isLand = false; // 身体组件是否已经落地
-    public System.Action OnHitEvent; // 子弹击中事件
+    static public event System.Action<Collider2D> OnHitEvent;
 
     void Awake()
     {
@@ -47,8 +47,8 @@ public abstract class BulletBase : MonoBehaviour
         //如果击中敌人或者障碍物
         if (collision.CompareTag("Enemy") || collision.CompareTag("Obstacle"))
         {
+            OnHitEvent?.Invoke(collision);
             OnHit(collision); //调用子类实现的OnHit方法，实现多态功能
-            OnHitEvent?.Invoke(); // 调用击中事件   
         }
     }
 

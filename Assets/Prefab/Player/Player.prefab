@@ -321,7 +321,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &9115316405993268204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -393,4 +393,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   arm: {fileID: 217012284336388863, guid: c69d921c016e5834f858d25466e89907, type: 3}
   leg: {fileID: 7514109647162912872, guid: 4a086062e403fe74b842c845ee73ec62, type: 3}
-  _instanceOffset: 0.5
+  _instanceOffset: 1.5
+  _armCount: 2
