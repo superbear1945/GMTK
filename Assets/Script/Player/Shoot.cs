@@ -30,6 +30,16 @@ public class Shoot : MonoBehaviour
 
     void OnShoot(InputAction.CallbackContext context)
     {
-        
+        Transform playerTransform = GameManager.CurrentPlayer.transform;
+        Vector2 direction = playerTransform.right;
+
     }
+
+    // void OnDrawGizmos()
+    // {
+    //     Transform playerTransform = GameManager.CurrentPlayer.transform;
+    //     Vector2 direction = playerTransform.right.normalized;
+    //     Gizmos.color = Color.red;
+    //     Gizmos.DrawLine(playerTransform.position, playerTransform.position + (Vector3)direction * 10f);
+    // }
 }
