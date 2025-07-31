@@ -50,8 +50,17 @@ public abstract class BulletBase : MonoBehaviour
             OnHitEvent?.Invoke(collision);
             OnHit(collision); //调用子类实现的OnHit方法，实现多态功能
         }
+
+        if (_isLand && collision.CompareTag("Player"))
+        {
+            OnPickUp(); // 调用子类实现的OnPickUp方法，实现多态功能
+            Destroy(gameObject); // 被拾取后销毁地上的肢体
+        }
     }
 
     // abstract 方法：子类必须实现OnHit方法
     public abstract void OnHit(Collider2D collision);
+
+    //子类必须实现被捡起的方法
+    public abstract void OnPickUp();
 }

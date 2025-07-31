@@ -19,6 +19,18 @@ public class Shoot : MonoBehaviour
     int _armCount = 2;
     int _legCount = 2;
 
+    public void AddArm()
+    {
+        if(_armCount < 2)
+            _armCount++;
+    }
+
+    public void AddLeg()
+    {
+        if(_legCount < 2)
+            _legCount++;
+    }
+
     void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
@@ -29,15 +41,15 @@ public class Shoot : MonoBehaviour
             Debug.LogError("No Shoot Action On " + gameObject.name);
 
         // 注册射击事件
-        _shootAction.performed += OnShootArm;
+        _shootAction.performed += OnShoot;
     }
 
     void OnDisable()
     {
-        _shootAction.performed -= OnShootArm;  // 取消注册事件，避免内存泄漏
+        _shootAction.performed -= OnShoot;  // 取消注册事件，避免内存泄漏
     }
 
-    void OnShootArm(InputAction.CallbackContext context)
+    void OnShoot(InputAction.CallbackContext context)
     {
         bool isLeft = false;
         //判断按下的是左键还是右键
