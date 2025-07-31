@@ -110,6 +110,17 @@
                     "action": "ShootArm",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "84b094f3-d95c-4b25-ac91-be7193102387",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShootArm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

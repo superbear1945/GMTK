@@ -36,18 +36,30 @@ public class Shoot : MonoBehaviour
     void OnShootArm(InputAction.CallbackContext context)
     {
         bool isLeft = false;
+        //判断按下的是左键还是右键
         if (context.control.name == "leftButton")
             isLeft = true;
         else if (context.control.name == "rightButton")
             isLeft = false;
-        Debug.Log(isLeft);
+        else
+            Debug.LogError("Unknown button pressed: " + context.control.name);
+
         //获取玩家当前朝向
         Transform playerTransform = GameManager.CurrentPlayer.transform;
         Vector2 direction = playerTransform.right.normalized;
         Vector2 instancePosition = playerTransform.position + (Vector3)direction * _instanceOffset; // 在玩家前方生成
 
-        var armInstance = Instantiate(arm, instancePosition, Quaternion.identity);
-        armInstance.transform.up = direction; // 设置朝向
+        if (isLeft == true)
+        {
+            var armInstance = Instantiate(arm, instancePosition, Quaternion.identity);
+            armInstance.transform.up = direction; // 设置朝向
+        }
+        else
+        {
+            var armInstance = Instantiate(leg, instancePosition, Quaternion.identity);
+            armInstance.transform.up = direction; // 设置朝向
+        }
+            
 
     }
     

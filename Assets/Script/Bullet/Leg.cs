@@ -4,5 +4,9 @@ using UnityEngine;
 
 public class Leg : BulletBase
 {
-    
+    public override void OnHit(Collider2D collision)
+    {
+        _isLand = true; // 设置为已落地状态
+        _rb2d.velocity = Vector2.zero; // 停止移动 
+    }
 }
