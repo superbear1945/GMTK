@@ -40,7 +40,8 @@ public class Shoot : MonoBehaviour
         Vector2 direction = playerTransform.right.normalized;
         Vector2 instancePosition = playerTransform.position + (Vector3)direction * _instanceOffset; // 在玩家前方生成
 
-        Instantiate(arm, instancePosition, Quaternion.identity);
+        var armInstance = Instantiate(arm, instancePosition, Quaternion.identity);
+        armInstance.transform.up = direction; // 设置朝向
 
     }
     

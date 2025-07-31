@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Arm : BulletBase
+public class Leg : BulletBase
 {
     
 }
