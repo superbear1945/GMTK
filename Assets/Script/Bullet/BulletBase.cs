@@ -42,16 +42,16 @@ public abstract class BulletBase : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+    void OnCollisionEnter2D(Collision2D collision)
     {
         //如果击中敌人或者障碍物
-        if (collision.CompareTag("Enemy") || collision.CompareTag("Obstacle"))
+        if (collision.collider.CompareTag("Enemy") || collision.collider.CompareTag("Obstacle"))
         {
-            OnHitEvent?.Invoke(collision);
-            OnHit(collision); //调用子类实现的OnHit方法，实现多态功能
+            OnHitEvent?.Invoke(collision.collider);
+            OnHit(collision.collider); //调用子类实现的OnHit方法，实现多态功能
         }
 
-        if (_isLand && collision.CompareTag("Player"))
+        if (_isLand && collision.collider.CompareTag("Player"))
         {
             OnPickUp(); // 调用子类实现的OnPickUp方法，实现多态功能
             Destroy(gameObject); // 被拾取后销毁地上的肢体
