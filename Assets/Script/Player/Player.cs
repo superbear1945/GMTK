@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     public Vector3 Position => transform.position;
     public Vector3 Forward => transform.up;
     public Vector3 Right => transform.right;
+    public bool isMove = false;
     
     private void Awake()
     {

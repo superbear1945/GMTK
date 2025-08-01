@@ -33,6 +33,14 @@ public class Move : MonoBehaviour
     void PlayerMove()
     {
         Vector2 moveDirection = _moveAction.ReadValue<Vector2>();
+        if(moveDirection != Vector2.zero)
+        {
+            Player.Instance.isMove = true; // 设置玩家移动状态
+        }
+        else
+        {
+            Player.Instance.isMove = false; // 停止移动时重置状态
+        }
         _rb2d.MovePosition(_rb2d.position + moveDirection * Time.fixedDeltaTime * speed);
     }
 
