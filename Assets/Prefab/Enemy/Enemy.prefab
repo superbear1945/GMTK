@@ -11,10 +11,11 @@ GameObject:
   - component: {fileID: 6708251033861061570}
   - component: {fileID: 4497096112387271061}
   - component: {fileID: 97113417914767711}
-  - component: {fileID: 2525526622113113490}
+  - component: {fileID: 9016870983054745565}
   - component: {fileID: 4019090732730051341}
   - component: {fileID: 5388445468316782040}
   - component: {fileID: 4597718535141142838}
+  - component: {fileID: 4729366526180408629}
   - component: {fileID: 4239222061721658289}
   m_Layer: 0
   m_Name: Enemy
@@ -125,7 +126,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &2525526622113113490
+--- !u!114 &9016870983054745565
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -134,7 +135,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5282404462474531978}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe37a85b8f11a6d4b92312218db5534d, type: 3}
+  m_Script: {fileID: 11500000, guid: 7758c2ede4ba45f45a20d8874b619d1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &4019090732730051341
@@ -178,7 +179,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 1
-  target: {fileID: 3563087935534235053, guid: b0d7b6161e3d72c4a90fbe42acb4f7ae, type: 3}
+  target: {fileID: 0}
 --- !u!114 &4597718535141142838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -221,6 +222,20 @@ MonoBehaviour:
   slowWhenNotFacingTarget: 1
   whenCloseToDestination: 0
   constrainInsideGraph: 0
+--- !u!114 &4729366526180408629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5282404462474531978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81c7db17a4add524287d948dff93f86e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  findRaius: 5
+  drawGizmos: 0
 --- !u!50 &4239222061721658289
 Rigidbody2D:
   serializedVersion: 4
