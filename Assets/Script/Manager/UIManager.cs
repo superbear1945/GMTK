@@ -15,7 +15,7 @@ public class UIManager : MonoBehaviour
         Player.Instance.GetComponent<Shoot>().OnShootEvent += UpdateUI;
     }
 
-    void OnDestroy()
+    void OnDisable()
     {
         Player.Instance.GetComponent<Shoot>().OnShootEvent -= UpdateUI; // 取消注册事件，避免内存泄漏
     }

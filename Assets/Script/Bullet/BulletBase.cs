@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class BulletBase : MonoBehaviour
@@ -42,8 +43,11 @@ public abstract class BulletBase : MonoBehaviour
         }
     }
 
+    
+
     void OnCollisionEnter2D(Collision2D collision)
     {
+        Debug.Log(collision.collider.name);
         //如果击中敌人或者障碍物
         if (collision.collider.CompareTag("Enemy") || collision.collider.CompareTag("Obstacle"))
         {
