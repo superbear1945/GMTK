@@ -8,19 +8,20 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI armCountText;
     public TextMeshProUGUI legCountText;
 
-    public UIManager Instance { get; private set; }
+    static public UIManager Instance { get; private set; }
 
     void Start()
     {
-        Player.Instance.GetComponent<Shoot>().OnShootEvent += UpdateUI;
+        Player.Instance.GetComponent<Shoot>().OnShootEvent += UpdateCountUI;
     }
 
     void OnDisable()
     {
-        Player.Instance.GetComponent<Shoot>().OnShootEvent -= UpdateUI; // 取消注册事件，避免内存泄漏
+        if(Player.Instance != null)
+            Player.Instance.GetComponent<Shoot>().OnShootEvent -= UpdateCountUI; // 取消注册事件，避免内存泄漏
     }
 
-    private void UpdateUI()
+    public void UpdateCountUI()
     {
         //检测空引用
         if (armCountText == null || legCountText == null)

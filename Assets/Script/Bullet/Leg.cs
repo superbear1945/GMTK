@@ -13,5 +13,6 @@ public class Leg : BulletBase
     public override void OnPickUp()
     {
         Player.Instance.AddLeg();
+        UIManager.Instance.UpdateCountUI(); // 更新UI显示
     }
 }

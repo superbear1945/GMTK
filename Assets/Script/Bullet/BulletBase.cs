@@ -43,7 +43,7 @@ public abstract class BulletBase : MonoBehaviour
         }
     }
 
-    
+
 
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -53,6 +53,7 @@ public abstract class BulletBase : MonoBehaviour
         {
             OnHitEvent?.Invoke(collision.collider);
             OnHit(collision.collider); //调用子类实现的OnHit方法，实现多态功能
+            _rb2d.bodyType = RigidbodyType2D.Static; // 设置为静态，停止移动
         }
 
         if (_isLand && collision.collider.CompareTag("Player"))

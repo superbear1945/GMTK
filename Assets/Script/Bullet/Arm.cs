@@ -13,5 +13,6 @@ public class Arm : BulletBase
     public override void OnPickUp()
     {
         Player.Instance.AddArm();
+        UIManager.Instance.UpdateCountUI(); // 更新UI显示
     }
 }
