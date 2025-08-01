@@ -58,7 +58,6 @@ public abstract class BulletBase : MonoBehaviour
         {
             OnHitEvent?.Invoke(collision.collider);
             OnHit(collision.collider); //调用子类实现的OnHit方法，实现多态功能
-            _rb2d.bodyType = RigidbodyType2D.Static; // 设置为静态，停止移动
             _collider2D.isTrigger = true; // 设置为触发器，成为地上的阻碍物
         }
 
