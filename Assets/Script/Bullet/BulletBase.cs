@@ -8,6 +8,7 @@ public abstract class BulletBase : MonoBehaviour
     public float speed = 5f; // 子弹速度
     public float lifetime = 1f; // 子弹生命周期
     protected Rigidbody2D _rb2d;
+    protected Collider2D _collider2D; 
     protected bool _isLand = false; // 身体组件是否已经落地
     static public event System.Action<Collider2D> OnHitEvent;
 
@@ -17,6 +18,10 @@ public abstract class BulletBase : MonoBehaviour
         _rb2d = GetComponent<Rigidbody2D>();
         if (_rb2d == null)
             Debug.LogError("No Rigidbody2D Component On " + gameObject.name);
+
+        _collider2D = GetComponent<Collider2D>();
+        if (_collider2D == null)
+            Debug.LogError("No Collider2D Component On " + gameObject.name);
     }
 
     void Start()
@@ -40,6 +45,7 @@ public abstract class BulletBase : MonoBehaviour
         {
             _isLand = true;
             _rb2d.velocity = Vector2.zero; // 停止移动
+            _collider2D.isTrigger = true; // 设置为触发器，成为地上的阻碍物
         }
     }
 
@@ -47,16 +53,22 @@ public abstract class BulletBase : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log(collision.collider.name);
         //如果击中敌人或者障碍物
         if (collision.collider.CompareTag("Enemy") || collision.collider.CompareTag("Obstacle"))
         {
             OnHitEvent?.Invoke(collision.collider);
             OnHit(collision.collider); //调用子类实现的OnHit方法，实现多态功能
             _rb2d.bodyType = RigidbodyType2D.Static; // 设置为静态，停止移动
+            _collider2D.isTrigger = true; // 设置为触发器，成为地上的阻碍物
         }
 
-        if (_isLand && collision.collider.CompareTag("Player"))
+        
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        // 捡起地上的肢体逻辑
+        if (_isLand && collision.CompareTag("Player"))
         {
             OnPickUp(); // 调用子类实现的OnPickUp方法，实现多态功能
             Destroy(gameObject); // 被拾取后销毁地上的肢体
