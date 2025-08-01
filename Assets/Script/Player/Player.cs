@@ -34,20 +34,14 @@ public class Player : MonoBehaviour
     public bool CanShoot() => armCount > 0 || legCount > 0;
     public bool CanMove() => legCount > 0;
     
-    // 弹药管理方法（核心游戏逻辑，有必要）
-    public void ConsumeArm()
-    {
-        if (armCount > 0) armCount--;
-    }
+    // 弹药管理方法，包括肢体的使用和回收
+    public void ConsumeArm() { if (armCount > 0) armCount--; }
     
-    public void ConsumeLeg()
-    {
-        if (legCount > 0) legCount--;
-    }
-    
-    public void AddArm(int amount = 1) => armCount += amount;
-    public void AddLeg(int amount = 1) => legCount += amount;
-    
+    public void ConsumeLeg() { if (legCount > 0) legCount--; }
+
+    public void AddArm() { if (armCount < 2) armCount++; }
+    public void AddLeg() { if (legCount < 2) legCount++; }
+
     private void OnDestroy()
     {
         if (Instance == this) Instance = null;

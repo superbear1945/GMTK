@@ -12,6 +12,6 @@ public class Arm : BulletBase
 
     public override void OnPickUp()
     {
-        GameManager.CurrentPlayer.GetComponent<Shoot>().AddArm();
+        Player.Instance.AddArm();
     }
 }

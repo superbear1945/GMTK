@@ -12,6 +12,6 @@ public class Leg : BulletBase
 
     public override void OnPickUp()
     {
-        GameManager.CurrentPlayer.GetComponent<Shoot>().AddLeg();
+        Player.Instance.AddLeg();
     }
 }
