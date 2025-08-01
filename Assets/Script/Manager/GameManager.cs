@@ -39,14 +39,8 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         // 验证 Player 实例是否存在
-        if (Player.Instance != null)
-        {
-            Debug.Log("Player实例已就绪");
-        }
-        else
-        {
+        if(Player.Instance != null)
             Debug.LogWarning("场景中未找到Player实例！");
-        }
 
         if (spawnPoint == null)
             Debug.LogError("Spawn Point未设置，请在GameManager中设置出生点");

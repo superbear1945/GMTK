@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class AimToMouse : MonoBehaviour
 {
@@ -17,14 +18,48 @@ public class AimToMouse : MonoBehaviour
     {
         _playerInput = GetComponent<PlayerInput>();
         _mouseAction = _playerInput.actions["MousePosition"];
-        _camera = Camera.main;
+        RefreshCameraReference();
         
         if (_mouseAction == null)
             Debug.LogError("No Mouse Action On " + gameObject.name);
         if (_playerInput == null)
             Debug.LogError("No PlayerInput Component On " + gameObject.name);
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // 场景加载完成后，重新获取相机引用
+        StartCoroutine(RefreshCameraAfterDelay());
+    }
+
+    private IEnumerator RefreshCameraAfterDelay()
+    {
+        // 等待一帧，确保新场景的相机已经初始化
+        yield return null;
+        RefreshCameraReference();
+    }
+
+    private void RefreshCameraReference()
+    {
+        _camera = Camera.main;
         if (_camera == null)
-            Debug.LogError("No Main Camera found for " + gameObject.name);
+        {
+            _camera = FindObjectOfType<Camera>();
+            Debug.LogWarning("Camera.main not found, using FindObjectOfType<Camera>");
+        }
+        
+        if (_camera == null)
+            Debug.LogError("No camera found in the scene!");
     }
 
     void Update()
@@ -49,7 +84,6 @@ public class AimToMouse : MonoBehaviour
         if (direction.sqrMagnitude < 0.001f) return;
         
         // 计算从当前 up 方向到目标方向的角度
-        // 这样就不需要硬编码的90度偏移了
         float angle = Vector2.SignedAngle(Vector2.up, direction);
         
         // 创建目标旋转
