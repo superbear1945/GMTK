@@ -15,10 +15,6 @@ public class Shoot : MonoBehaviour
     [SerializeField, Tooltip("子弹生成与玩家的距离"), Header("射击设置")]
     float _instanceOffset = 0.5f; // 实例化偏移量
 
-    // [SerializeField, Tooltip("肢体数量管理")]
-    // int Player.Instance.armCount = 2;
-    // int Player.Instance.legCount = 2;
-
     public void AddArm()
     {
         if(Player.Instance.armCount < 2)
@@ -60,9 +56,9 @@ public class Shoot : MonoBehaviour
         else
             Debug.LogError("Unknown button pressed: " + context.control.name);
 
-        //获取玩家当前朝向
+        //获取玩家当前朝向 - 改为使用 up 作为正面
         Transform playerTransform = GameManager.CurrentPlayer.transform;
-        Vector2 direction = playerTransform.right.normalized;
+        Vector2 direction = playerTransform.up.normalized; // 从 right 改为 up
         Vector2 instancePosition = playerTransform.position + (Vector3)direction * _instanceOffset; // 在玩家前方生成
 
         if (isLeft == true && Player.Instance.armCount > 0)
@@ -74,11 +70,8 @@ public class Shoot : MonoBehaviour
         else if(isLeft == false && Player.Instance.legCount > 0)
         {
             Player.Instance.legCount--; //减少腿部数量
-            var armInstance = Instantiate(leg, instancePosition, Quaternion.identity);
-            armInstance.transform.up = direction; // 设置朝向
+            var legInstance = Instantiate(leg, instancePosition, Quaternion.identity); // 修正变量名
+            legInstance.transform.up = direction; // 设置朝向
         }
-            
-
     }
-    
 }

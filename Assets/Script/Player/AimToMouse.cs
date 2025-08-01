@@ -43,30 +43,25 @@ public class AimToMouse : MonoBehaviour
         Vector3 mouseWorldPosition = _camera.ScreenToWorldPoint(new Vector3(mouseScreenPosition.x, mouseScreenPosition.y, _camera.nearClipPlane));
         
         // 计算从角色到鼠标的方向（2D平面）
-        Vector3 direction = mouseWorldPosition - transform.position;
-        direction.z = 0f; // 确保Z轴为0
+        Vector2 direction = (mouseWorldPosition - transform.position).normalized;
         
-        // 检查方向向量是否有效（避免除零错误）
+        // 检查方向向量是否有效
         if (direction.sqrMagnitude < 0.001f) return;
         
-        // 计算旋转角度
-        // Atan2: 计算向量角度，返回弧度值(-π到π)
-        // Rad2Deg: 将弧度转换为角度制(×57.2958)
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        // 计算从当前 up 方向到目标方向的角度
+        // 这样就不需要硬编码的90度偏移了
+        float angle = Vector2.SignedAngle(Vector2.up, direction);
         
-        // 创建目标旋转：绕Z轴(forward)旋转angle度
+        // 创建目标旋转
         Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
         
         // 应用旋转
         if (useSmoothing)
         {
-            // Slerp: 球面线性插值，平滑旋转
-            // 每帧移动 rotationSpeed * deltaTime 的百分比
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
         else
         {
-            // 立即设置为目标旋转
             transform.rotation = targetRotation;
         }
     }
