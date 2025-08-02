@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5a4c85c0557ce1f4c87c3dd0d15a9439
+guid: 2acfdb912a558804d90d786342544893
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 8
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -110,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PlayerFireR_0
+      name: Walk_2Hand_0
       rect:
         serializedVersion: 2
         x: 0
@@ -124,14 +124,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0404aae4b8f323c478b338cfbe9582bd
-      internalID: -898748093
+      spriteID: 22c56a4fadd2c824488e37ed4049578b
+      internalID: 1192572944
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayerFireR_1
+      name: Walk_2Hand_1
       rect:
         serializedVersion: 2
         x: 16
@@ -145,14 +145,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a8b7778b07a22d742bd5d1c5a37afe73
-      internalID: -1871722718
+      spriteID: 29c87b837e412594b919d7fd7757e5e4
+      internalID: -1013685251
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PlayerFireR_2
+      name: Walk_2Hand_2
       rect:
         serializedVersion: 2
         x: 32
@@ -166,29 +166,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5d6a2861ce71a5e44808b10435b70bc9
-      internalID: 494805034
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: PlayerFireR_3
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 0
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2a59d9ad3a3f88041b8adb3286084ad7
-      internalID: 1397170700
+      spriteID: 91ad40c16c6874b44af704a437e3f9c3
+      internalID: 2063494100
       vertices: []
       indices: 
       edges: []
@@ -204,10 +183,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      PlayerFireR_0: -898748093
-      PlayerFireR_1: -1871722718
-      PlayerFireR_2: 494805034
-      PlayerFireR_3: 1397170700
+      Walk_2Hand_0: 1192572944
+      Walk_2Hand_1: -1013685251
+      Walk_2Hand_2: 2063494100
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
