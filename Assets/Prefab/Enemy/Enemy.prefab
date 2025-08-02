@@ -266,7 +266,11 @@ MonoBehaviour:
   attackDistance: 1
   attackCooldown: 1
   attackDuration: 0.5
-  attackDamage: 1
+  attackPreDelay: 1
+  attackPostDelay: 0.7
+  playerLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
   attackBoxSize: {x: 1.5, y: 1}
   forwardOffset: 0.5
   rightOffset: 0

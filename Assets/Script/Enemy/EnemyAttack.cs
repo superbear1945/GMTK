@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.EditorTools;
 using UnityEngine;
 
 public class EnemyAttack : MonoBehaviour
@@ -7,18 +8,29 @@ public class EnemyAttack : MonoBehaviour
     [Header("攻击设置")]
     [Tooltip("攻击距离")]
     public float attackDistance = 2f;
+
     [Tooltip("攻击冷却时间")]
     public float attackCooldown = 1f;
+
     [Tooltip("攻击持续时间")]
     public float attackDuration = 0.5f;
-    [Tooltip("攻击伤害")]
-    public int attackDamage = 1;
-    
+
+    [Tooltip("攻击前摇")]
+    public float attackPreDelay = 0.2f;
+
+    [Tooltip("攻击后摇")]
+    public float attackPostDelay = 0.2f;
+
     [Header("攻击检测")]
+    [Tooltip("玩家所在的LayerMask")]
+    public LayerMask playerLayerMask;
+
     [Tooltip("攻击检测的盒子大小")]
     public Vector2 attackBoxSize = new Vector2(1.5f, 1f);
+
     [Tooltip("攻击检测前方偏移距离（基于transform.up方向）")]
     public float forwardOffset = 0.5f;
+
     [Tooltip("攻击检测右侧偏移距离（基于transform.right方向）")]
     public float rightOffset = 0f;
     
@@ -28,13 +40,14 @@ public class EnemyAttack : MonoBehaviour
 
     [SerializeField, Tooltip("是否正在攻击中")]
     private bool isAttacking = false;
+
     [SerializeField, Tooltip("攻击冷却计时器")]
     private float attackCooldownTimer = 0f;
 
     // 事件系统
-    public System.Action<int> OnDamageDealt; // 造成伤害时的事件
-    public System.Action OnAttackStart;      // 攻击开始事件
-    public System.Action OnAttackEnd;        // 攻击结束事件
+    public System.Action OnPlayerHit;    // 击中玩家时的事件
+    public System.Action OnAttackStart;  // 攻击开始事件
+    public System.Action OnAttackEnd;    // 攻击结束事件
 
     // 私有引用
     private Transform playerTransform;
@@ -139,13 +152,13 @@ public class EnemyAttack : MonoBehaviour
         Debug.Log($"{gameObject.name} 开始攻击玩家！");
         
         // 攻击预备阶段（可以播放攻击动画的前摇）
-        yield return new WaitForSeconds(attackDuration * 0.3f);
+        yield return new WaitForSeconds(attackDuration * attackPreDelay);
         
         // 执行攻击检测
         PerformAttackDetection();
         
         // 攻击后摇阶段
-        yield return new WaitForSeconds(attackDuration * 0.7f);
+        yield return new WaitForSeconds(attackDuration * attackPostDelay);
         
         // 设置攻击冷却
         attackCooldownTimer = attackCooldown;
@@ -169,7 +182,8 @@ public class EnemyAttack : MonoBehaviour
             attackBoxSize,
             transform.eulerAngles.z, // 旋转角度与敌人保持一致
             Vector2.zero,            // 不需要投射方向，因为是原地检测
-            0f                       // 距离为0，只检测当前位置
+            0f,                       // 距离为0，只检测当前位置
+            playerLayerMask
         );
 
         bool hitPlayer = false;
@@ -179,7 +193,7 @@ public class EnemyAttack : MonoBehaviour
             if (hit.collider.CompareTag("Player"))
             {
                 hitPlayer = true;
-                DealDamageToPlayer();
+                KillPlayer();
                 break;
             }
         }
@@ -191,19 +205,16 @@ public class EnemyAttack : MonoBehaviour
     }
 
     /// <summary>
-    /// 对玩家造成伤害
+    /// 击杀玩家（一击必杀）
     /// </summary>
-    private void DealDamageToPlayer()
+    private void KillPlayer()
     {
-        Debug.Log($"{gameObject.name} 对玩家造成了 {attackDamage} 点伤害！");
+        Debug.Log($"{gameObject.name} 击中玩家！游戏结束！");
         
-        // 触发伤害事件
-        OnDamageDealt?.Invoke(attackDamage);
+        // 触发击中玩家事件
+        OnPlayerHit?.Invoke();
         
-        // 如果玩家有生命值系统，可以在这里调用
-        // Player.Instance.TakeDamage(attackDamage);
-        
-        // 或者直接结束游戏（如果是一击必杀的游戏）
+        // 直接结束游戏
         if (GameManager.Instance != null)
         {
             GameManager.Instance.GameEnd();
