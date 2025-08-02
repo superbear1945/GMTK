@@ -131,13 +131,7 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
-        // 如果玩家离得太远，切换回追逐状态
-        // if (!_enemyAttack.IsInAttackRange())
-        // {
-        //     _enemyAttack.StopAttack();
-        //     currentState = EnemyState.Chase;
-        //     return;
-        // }
+        
 
         // 停止移动，准备攻击
         _aiPath.canMove = false;
@@ -162,6 +156,14 @@ public class EnemyAI : MonoBehaviour
     private void OnAttackEnded()
     {
         Debug.Log($"{gameObject.name} AI: 攻击结束");
+
+        //攻击结束后如果玩家离得太远，切换回追逐状态
+        if (!_enemyAttack.IsInAttackRange())
+        {
+            //_enemyAttack.StopAttack();
+            currentState = EnemyState.Chase;
+            return;
+        }
     }
 
     private void OnPlayerHit() // 修改：新的击中玩家回调
