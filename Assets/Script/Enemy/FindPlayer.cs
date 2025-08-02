@@ -43,8 +43,7 @@ public class FindPlayer : MonoBehaviour
 
     void Update()
     {
-        _aiPath.canMove = Find(); // 根据是否找到玩家来决定是否移动
-        _enemyAI.isFindPlayer = Find(); // 更新敌人AI的找到玩家状态
+        _enemyAI.SetPlayerFound(Find());
     }
 
 

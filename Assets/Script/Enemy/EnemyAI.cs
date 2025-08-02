@@ -17,17 +17,38 @@ namespace EnemyAi
 
 public class EnemyAI : MonoBehaviour
 {
+    [Header("AI状态")]
     public EnemyState currentState;
+    
+    [Header("AI组件")]
     AIPath _aiPath;
     AIDestinationSetter _destinationSetter;
 
-    [Header("Ai属性")]
+    [Header("AI属性")]
     [Tooltip("是否找到玩家")]
     public bool isFindPlayer = false;
+    
+    [Header("巡逻设置")]
     [Tooltip("巡逻半径")]
     public float patrolRadius = 5f;
-    [Tooltip("巡逻等待时间")]
+    [Tooltip("到达巡逻点后的等待时间")]
     public float patrolWaitTime = 2f;
+    [Tooltip("闲置状态持续时间（之后开始巡逻）")]
+    public float idleTime = 1f;
+    [Tooltip("到达巡逻点的检测距离")]
+    public float reachDistance = 1f;
+
+    [Header("调试信息")]
+    [SerializeField, Tooltip("当前巡逻目标点")]
+    private Vector3 currentPatrolTarget;
+    [SerializeField, Tooltip("是否正在巡逻中")]
+    private bool isPatrolling = false;
+    [SerializeField, Tooltip("是否正在闲置中")]
+    private bool isIdling = false;
+
+    // 私有变量
+    private GameObject currentPatrolTargetObject;
+    private Vector3 initialPosition; // 记录初始位置作为巡逻中心点
 
     void Awake()
     {
@@ -42,95 +63,245 @@ public class EnemyAI : MonoBehaviour
 
     void Start()
     {
-        currentState = EnemyState.Idle; // 初始状态为闲置
+        currentState = EnemyState.Idle;
+        initialPosition = transform.position; // 记录初始位置
     }
     
     void Update()
     {
-        SwitchState(); // 根据当前状态执行相应逻辑
-        
+        SwitchState();
     }
 
     void SwitchState()
     {
-        //状态切换
         switch (currentState)
         {
             case EnemyState.Idle:
-                {
-                    // 执行闲置状态逻辑
-                    OnIdle();
-                    break;
-                }
+                OnIdle();
+                break;
             case EnemyState.Patrol:
-                {
-                    // 执行巡逻状态逻辑
-                    OnPatrol();
-                    break;
-                }
+                OnPatrol();
+                break;
             case EnemyState.Chase:
-                {
-                    // 执行追逐状态逻辑
-                    OnChase();
-                    break;
-                }
+                OnChase();
+                break;
             default:
                 Debug.LogError("未知的敌人状态: " + currentState);
                 break;
         }
     }
 
-    private void OnChase()
+    private void OnIdle()
     {
-        if(!isFindPlayer)
+        if (isFindPlayer)
         {
-            currentState = EnemyState.Idle; // 如果没有找到玩家，切换到闲置状态
+            currentState = EnemyState.Chase;
             return;
         }
 
-        _aiPath.canMove = true; // 允许移动
-        _destinationSetter.target = Player.Instance.transform; // 设置目标为玩家
+        _aiPath.canMove = false;
+        _destinationSetter.target = null;
+
+        // 闲置一段时间后开始巡逻
+        if (!isIdling)
+        {
+            StartCoroutine(IdleTimer());
+        }
+    }
+
+    private IEnumerator IdleTimer()
+    {
+        isIdling = true;
+        yield return new WaitForSeconds(idleTime);
+        
+        if (currentState == EnemyState.Idle && !isFindPlayer)
+        {
+            currentState = EnemyState.Patrol;
+        }
+        
+        isIdling = false;
     }
 
     private void OnPatrol()
     {
-        if(isFindPlayer)
+        if (isFindPlayer)
         {
-            currentState = EnemyState.Chase; // 如果找到玩家，切换到追逐状态
+            StopPatrol();
+            currentState = EnemyState.Chase;
             return;
         }
 
-        _aiPath.canMove = true; // 允许移动
-        StartCoroutine(Patrol()); // 开始巡逻
-        
-    }
+        _aiPath.canMove = true;
 
-    // 巡逻逻辑
-    private IEnumerator Patrol()
-    {
-        
-        //生成随机巡逻点
-        Vector3 randomPoint = transform.position + new Vector3(
-            UnityEngine.Random.Range(-patrolRadius, patrolRadius),
-            UnityEngine.Random.Range(-patrolRadius, patrolRadius),
-            0
-        );
-        // 创建一个临时的GameObject作为巡逻目标点
-        GameObject patrolTarget = new GameObject("PatrolTarget");
-        patrolTarget.transform.position = randomPoint;
-        _destinationSetter.target = patrolTarget.transform;
-        yield return new WaitForSeconds(patrolWaitTime); // 等待一段时间
-    }
-
-    private void OnIdle()
-    {
-        if(isFindPlayer)
+        // 如果还没有开始巡逻，开始巡逻协程
+        if (!isPatrolling)
         {
-            currentState = EnemyState.Chase; // 如果找到玩家，切换到追逐状态
+            StartCoroutine(PatrolCoroutine());
+        }
+    }
+
+    private IEnumerator PatrolCoroutine()
+    {
+        isPatrolling = true;
+
+        while (currentState == EnemyState.Patrol && !isFindPlayer)
+        {
+            // 寻找有效的巡逻点
+            Vector3 validPatrolPoint = GetValidPatrolPoint();
+            
+            if (validPatrolPoint != Vector3.zero)
+            {
+                // 设置巡逻目标
+                SetPatrolTarget(validPatrolPoint);
+                
+                // 等待到达目标点
+                yield return StartCoroutine(WaitForReachTarget(validPatrolPoint));
+                
+                // 到达后等待一段时间
+                yield return new WaitForSeconds(patrolWaitTime);
+            }
+            else
+            {
+                Debug.LogWarning($"敌人 {gameObject.name} 无法找到有效巡逻点，等待重试...");
+                yield return new WaitForSeconds(patrolWaitTime);
+            }
+        }
+
+        isPatrolling = false;
+    }
+
+    private Vector3 GetValidPatrolPoint()
+    {
+        int maxAttempts = 10;
+        
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            // 在圆形范围内生成随机点（以初始位置为中心）
+            Vector2 randomDirection = UnityEngine.Random.insideUnitCircle * patrolRadius;
+            Vector3 targetPoint = initialPosition + new Vector3(randomDirection.x, randomDirection.y, 0);
+            
+            // 检查该点是否可达
+            if (IsValidPatrolPoint(targetPoint))
+            {
+                return targetPoint;
+            }
+        }
+        
+        return Vector3.zero; // 表示没有找到有效点
+    }
+
+    private bool IsValidPatrolPoint(Vector3 point)
+    {
+        // 检查A*寻路是否可达该点
+        if (AstarPath.active == null) return true; // 如果没有A*图，假设可达
+        
+        NNInfo nearestInfo = AstarPath.active.GetNearest(point);
+        if (nearestInfo.node == null || !nearestInfo.node.Walkable)
+        {
+            return false;
+        }
+        
+        // 检查距离是否合理
+        if (Vector3.Distance(nearestInfo.position, point) > 2f)
+        {
+            return false;
+        }
+        
+        // 检查从当前位置是否可达
+        NNInfo startInfo = AstarPath.active.GetNearest(transform.position);
+        if (startInfo.node == null || !startInfo.node.Walkable)
+        {
+            return false;
+        }
+        
+        return PathUtilities.IsPathPossible(startInfo.node, nearestInfo.node);
+    }
+
+    private void SetPatrolTarget(Vector3 targetPosition)
+    {
+        currentPatrolTarget = targetPosition;
+        
+        // 清理之前的目标对象
+        if (currentPatrolTargetObject != null)
+        {
+            Destroy(currentPatrolTargetObject);
+        }
+        
+        // 创建新的巡逻目标
+        currentPatrolTargetObject = new GameObject($"PatrolTarget_{gameObject.name}");
+        currentPatrolTargetObject.transform.position = targetPosition;
+        _destinationSetter.target = currentPatrolTargetObject.transform;
+    }
+
+    private IEnumerator WaitForReachTarget(Vector3 targetPosition)
+    {
+        float timeout = 10f; // 超时时间，避免AI卡住
+        float elapsed = 0f;
+        
+        while (elapsed < timeout && currentState == EnemyState.Patrol && !isFindPlayer)
+        {
+            float distance = Vector3.Distance(transform.position, targetPosition);
+            
+            if (distance <= reachDistance)
+            {
+                break; // 到达目标点
+            }
+            
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private void OnChase()
+    {
+        if (!isFindPlayer)
+        {
+            StopChase();
+            currentState = EnemyState.Idle;
             return;
         }
 
-        _aiPath.canMove = false; // 停止移动
-        _destinationSetter.target = null; // 清除目标
+        if (Player.Instance == null)
+        {
+            Debug.LogWarning("Player.Instance 为空，无法追逐");
+            currentState = EnemyState.Idle;
+            return;
+        }
+
+        _aiPath.canMove = true;
+        _destinationSetter.target = Player.Instance.transform;
+    }
+
+    private void StopPatrol()
+    {
+        if (currentPatrolTargetObject != null)
+        {
+            Destroy(currentPatrolTargetObject);
+            currentPatrolTargetObject = null;
+        }
+        
+        StopAllCoroutines();
+        isPatrolling = false;
+        isIdling = false;
+    }
+
+    private void StopChase()
+    {
+        _destinationSetter.target = null;
+    }
+
+    // 公共方法：外部调用来设置是否发现玩家
+    public void SetPlayerFound(bool found)
+    {
+        isFindPlayer = found;
+    }
+
+    void OnDestroy()
+    {
+        // 清理巡逻目标对象
+        if (currentPatrolTargetObject != null)
+        {
+            Destroy(currentPatrolTargetObject);
+        }
     }
 }
