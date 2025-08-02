@@ -3,27 +3,19 @@ using System.Collections.Generic;
 using UnityEditor.UI;
 using UnityEngine;
 
-public class Destroyable_Door : MonoBehaviour,Interface_Door
+public class Destroyable_Door : MonoBehaviour, Interface_Door
 {
     [SerializeField] private BoxCollider2D _detectBox;
     [SerializeField] private BoxCollider2D _collidBox;
 
-
     public void Start()
     {
+        // Ensure there is no ambiguity by using 'this' keyword
         _detectBox.isTrigger = true;
     }
-
-
-    //碰撞逻辑？？
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        BeginOverlap(collision.gameObject);
-    }
-
     public void BeginOverlap(GameObject obj)
     {
-        if(obj.tag=="Bullet")//检测碰撞者是否为手臂
+        if (obj.tag == "Bullet")
         {
             Debug.Log("门检测到了手臂，碰撞关闭");
             _collidBox.enabled = false;
@@ -31,12 +23,16 @@ public class Destroyable_Door : MonoBehaviour,Interface_Door
         }
     }
 
-    // Update is called once per frame
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        BeginOverlap(collision.gameObject);
+    }
+
+
     public void Update()
     {
 
     }
-
 }
 
 
