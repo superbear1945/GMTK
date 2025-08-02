@@ -7,7 +7,7 @@ public class EnemyAttack : MonoBehaviour
 {
     [Header("攻击设置")]
     [Tooltip("攻击距离")]
-    public float attackDistance = 2f;
+    public float attackDistance = 1f;
 
     [Tooltip("攻击冷却时间")]
     public float attackCooldown = 1f;

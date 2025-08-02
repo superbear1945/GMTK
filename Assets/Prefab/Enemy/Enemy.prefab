@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 4729366526180408629}
   - component: {fileID: 4239222061721658289}
   - component: {fileID: 5160975744248780267}
+  - component: {fileID: 459331764807872990}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -320,3 +321,29 @@ MonoBehaviour:
   currentPatrolTarget: {x: 0, y: 0, z: 0}
   isPatrolling: 0
   isIdling: 0
+--- !u!114 &459331764807872990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5282404462474531978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 704ca01d97a495a468c32901766e76e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackDistance: 1
+  attackCooldown: 1
+  attackDuration: 0.5
+  attackPreDelay: 0.2
+  attackPostDelay: 0.2
+  playerLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  attackBoxSize: {x: 1.5, y: 1}
+  forwardOffset: 0.5
+  rightOffset: 0
+  enableGizmos: 1
+  isAttacking: 0
+  attackCooldownTimer: 0

@@ -150,12 +150,11 @@ public class EnemyAI : MonoBehaviour
     // 攻击事件回调
     private void OnAttackStarted()
     {
-        Debug.Log($"{gameObject.name} AI: 攻击开始");
+        
     }
 
     private void OnAttackEnded()
     {
-        Debug.Log($"{gameObject.name} AI: 攻击结束");
 
         //攻击结束后如果玩家离得太远，切换回追逐状态
         if (!_enemyAttack.IsInAttackRange())
@@ -168,7 +167,7 @@ public class EnemyAI : MonoBehaviour
 
     private void OnPlayerHit() // 修改：新的击中玩家回调
     {
-        Debug.Log($"{gameObject.name} AI: 击中玩家！");
+
     }
 
     private void OnIdle()

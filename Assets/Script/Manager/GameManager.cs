@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        //spawnPoint = GameObject.FindWithTag("SpawnPoint")?.transform; // 查找名为 SpawnPoint 的 GameObject
+        spawnPoint = GameObject.FindWithTag("SpawnPoint")?.transform; // 查找名为 SpawnPoint 的 GameObject
         if (spawnPoint == null)
             Debug.LogError("Spawn Point未设置，请在GameManager中设置出生点");
 

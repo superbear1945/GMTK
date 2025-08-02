@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class MainCanvas : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    static public MainCanvas Instance { get; private set; }
 
-    // Update is called once per frame
-    void Update()
+    void Awake()
     {
-        
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(this);
+        }
     }
 }
