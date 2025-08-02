@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using EnemyAi;
 using System.Data;
 
 public class AimToMouse : MonoBehaviour

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
-using EnemyAi;
 
 public class FindPlayer : MonoBehaviour
 {

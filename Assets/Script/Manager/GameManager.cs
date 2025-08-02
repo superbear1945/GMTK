@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour
         // if(Player.Instance != null)
         //     Debug.LogWarning("场景中未找到Player实例！");
 
+        spawnPoint = GameObject.FindWithTag("SpawnPoint")?.transform; // 查找名为 SpawnPoint 的 GameObject
         if (spawnPoint == null)
             Debug.LogError("Spawn Point未设置，请在GameManager中设置出生点");
         
