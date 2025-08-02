@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface Interface_Keypriviledge
 {
-    bool HasKey();
+    public void HasKey();
 }
