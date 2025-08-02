@@ -186,27 +186,28 @@ public class EnemyAttack : MonoBehaviour
             playerLayerMask
         );
 
-        bool hitPlayer = false;
-        
-        foreach (RaycastHit2D hit in hits)
-        {
-            if (hit.collider.CompareTag("Player"))
-            {
-                hitPlayer = true;
-                KillPlayer();
-                break;
-            }
-        }
+        //已废弃逻辑
+        // foreach (RaycastHit2D hit in hits)
+        // {
+        //     if (hit.collider.CompareTag("Player"))
+        //     {
+        //         hitPlayer = true;
+        //         KillPlayer();
+        //         break;
+        //     }
+        // }
 
-        if (!hitPlayer)
+        if (hits != null && hits.Length > 0)
+        {
+            KillPlayer();
+        }
+        else
         {
             Debug.Log($"{gameObject.name} 攻击未命中玩家");
         }
     }
 
-    /// <summary>
     /// 击杀玩家（一击必杀）
-    /// </summary>
     private void KillPlayer()
     {
         Debug.Log($"{gameObject.name} 击中玩家！游戏结束！");
@@ -216,9 +217,7 @@ public class EnemyAttack : MonoBehaviour
         
         // 直接结束游戏
         if (GameManager.Instance != null)
-        {
             GameManager.Instance.GameEnd();
-        }
     }
 
     /// <summary>
