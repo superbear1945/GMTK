@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     static public GameManager Instance { get; private set; }
     public Transform spawnPoint;
+    public Vector2 mousePosition; // 鼠标位置
 
     /// 当前玩家在GameObject的全局访问点（向后兼容）
     static public GameObject CurrentPlayer

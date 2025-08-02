@@ -76,12 +76,16 @@ public class AimToMouse : MonoBehaviour
         
         // 将屏幕坐标转换为世界坐标（2D）
         Vector3 mouseWorldPosition = _camera.ScreenToWorldPoint(new Vector3(mouseScreenPosition.x, mouseScreenPosition.y, _camera.nearClipPlane));
-        
+        mouseWorldPosition.z = 0; // 确保Z轴为0
+
+        GameManager.Instance.mousePosition = mouseWorldPosition; // 更新GameManager中的鼠标位置
+
         // 计算从角色到鼠标的方向（2D平面）
         Vector2 direction = (mouseWorldPosition - transform.position).normalized;
         
         // 检查方向向量是否有效
         if (direction.sqrMagnitude < 0.001f) return;
+
         
         // 计算从当前 up 方向到目标方向的角度
         float angle = Vector2.SignedAngle(Vector2.up, direction);
