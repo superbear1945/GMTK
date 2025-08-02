@@ -47,14 +47,27 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // // 验证 Player 实例是否存在
-        // if(Player.Instance != null)
-        //     Debug.LogWarning("场景中未找到Player实例！");
-
-        spawnPoint = GameObject.FindWithTag("SpawnPoint")?.transform; // 查找名为 SpawnPoint 的 GameObject
+        //spawnPoint = GameObject.FindWithTag("SpawnPoint")?.transform; // 查找名为 SpawnPoint 的 GameObject
         if (spawnPoint == null)
             Debug.LogError("Spawn Point未设置，请在GameManager中设置出生点");
-        
-        CurrentPlayer.transform.position = spawnPoint.position; // 确保玩家在游戏开始时位于生成点
+
+        SceneManager.sceneLoaded += OnSceneLoaded; // 订阅场景加载事件
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded; // 取消订阅场景加载事件
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        spawnPoint = GameObject.FindWithTag("SpawnPoint")?.transform; // 查找名为 SpawnPoint 的 GameObject
+
+
+        // 确保玩家在新场景加载后仍然位于生成点
+        if (CurrentPlayer != null && spawnPoint != null)
+        {
+            CurrentPlayer.transform.position = spawnPoint.position;
+        }
     }
 }

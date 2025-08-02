@@ -66,14 +66,14 @@ public class EnemyAI : MonoBehaviour
     void Start()
     {
         currentState = EnemyState.Idle;
-        initialPosition = transform.position; // 记录初始位置
+        initialPosition = transform.position;
 
         // 订阅攻击事件
         if (_enemyAttack != null)
         {
             _enemyAttack.OnAttackStart += OnAttackStarted;
             _enemyAttack.OnAttackEnd += OnAttackEnded;
-            _enemyAttack.OnDamageDealt += OnDamageDealt;
+            _enemyAttack.OnPlayerHit += OnPlayerHit; // 修改：订阅击中玩家事件
         }
     }
 
@@ -84,7 +84,7 @@ public class EnemyAI : MonoBehaviour
         {
             _enemyAttack.OnAttackStart -= OnAttackStarted;
             _enemyAttack.OnAttackEnd -= OnAttackEnded;
-            _enemyAttack.OnDamageDealt -= OnDamageDealt;
+            _enemyAttack.OnPlayerHit -= OnPlayerHit; // 修改：取消订阅击中玩家事件
         }
 
         // 清理巡逻目标对象
@@ -132,12 +132,12 @@ public class EnemyAI : MonoBehaviour
         }
 
         // 如果玩家离得太远，切换回追逐状态
-        if (!_enemyAttack.IsInAttackRange())
-        {
-            _enemyAttack.StopAttack();
-            currentState = EnemyState.Chase;
-            return;
-        }
+        // if (!_enemyAttack.IsInAttackRange())
+        // {
+        //     _enemyAttack.StopAttack();
+        //     currentState = EnemyState.Chase;
+        //     return;
+        // }
 
         // 停止移动，准备攻击
         _aiPath.canMove = false;
@@ -164,9 +164,9 @@ public class EnemyAI : MonoBehaviour
         Debug.Log($"{gameObject.name} AI: 攻击结束");
     }
 
-    private void OnDamageDealt(int damage)
+    private void OnPlayerHit() // 修改：新的击中玩家回调
     {
-        Debug.Log($"{gameObject.name} AI: 造成了 {damage} 点伤害");
+        Debug.Log($"{gameObject.name} AI: 击中玩家！");
     }
 
     private void OnIdle()
