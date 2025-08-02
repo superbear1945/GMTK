@@ -82,7 +82,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: 1192572944, guid: 2acfdb912a558804d90d786342544893, type: 3}
   m_Color: {r: 0.9245283, g: 0.056692798, b: 0.056692798, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -293,3 +293,8 @@ MonoBehaviour:
   isFindPlayer: 0
   patrolRadius: 5
   patrolWaitTime: 2
+  idleTime: 1
+  reachDistance: 1
+  currentPatrolTarget: {x: 0, y: 0, z: 0}
+  isPatrolling: 0
+  isIdling: 0
