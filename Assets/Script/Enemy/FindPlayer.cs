@@ -8,6 +8,8 @@ public class FindPlayer : MonoBehaviour
 {
     AIPath _aiPath;
     AIDestinationSetter _aiDestinationSetter;
+    EnemyAI _enemyAI;
+
     [Header("搜索玩家位置相关设置")]
     [Tooltip("搜索半径")]
     public float findRadius = 5f;
@@ -23,6 +25,10 @@ public class FindPlayer : MonoBehaviour
         _aiDestinationSetter = GetComponent<AIDestinationSetter>();
         if (_aiDestinationSetter == null)
             Debug.LogError("No AIDestinationSetter Component On " + gameObject.name);
+
+        _enemyAI = GetComponent<EnemyAI>();
+        if (_enemyAI == null)
+            Debug.LogError("No EnemyAI Component On " + gameObject.name);
     }
 
     void Start()
@@ -38,6 +44,7 @@ public class FindPlayer : MonoBehaviour
     void Update()
     {
         _aiPath.canMove = Find(); // 根据是否找到玩家来决定是否移动
+        _enemyAI.isFindPlayer = Find(); // 更新敌人AI的找到玩家状态
     }
 
 
