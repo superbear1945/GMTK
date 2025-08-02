@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.UI;
 using UnityEngine;
 
 public class Destroyable_Door : MonoBehaviour,Interface_Door
@@ -26,6 +27,7 @@ public class Destroyable_Door : MonoBehaviour,Interface_Door
         {
             Debug.Log("门检测到了手臂，碰撞关闭");
             _collidBox.enabled = false;
+            gameObject.GetComponent<SpriteRenderer>().enabled = false;
         }
     }
 

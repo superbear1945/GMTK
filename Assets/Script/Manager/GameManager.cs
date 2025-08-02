@@ -9,6 +9,14 @@ public class GameManager : MonoBehaviour
     public Transform spawnPoint;
     public Vector2 mousePosition; // 鼠标位置
 
+    //处理游戏逻辑的部分
+    public bool _getKey { get; private set; } = false;// 是否获取到钥匙
+    public void SetHasKey(Interface_Keypriviledge caller)
+    {
+        _getKey = true;
+    }
+
+
     /// 当前玩家在GameObject的全局访问点（向后兼容）
     static public GameObject CurrentPlayer
     {
