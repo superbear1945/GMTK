@@ -2,18 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using EnemyAi;
 using Pathfinding;
 
-namespace EnemyAi
+public enum EnemyState
 {
-    public enum EnemyState
-    {
-        Idle,       // 闲置状态
-        Patrol,     // 巡逻状态
-        Chase,      // 追逐状态
-        Attack      // 攻击状态
-    }
+    Idle,       // 闲置状态
+    Patrol,     // 巡逻状态
+    Chase,      // 追逐状态
+    Attack      // 攻击状态
 }
 
 
@@ -25,7 +21,7 @@ public class EnemyAI : MonoBehaviour
     [Header("AI组件")]
     AIPath _aiPath;
     AIDestinationSetter _destinationSetter;
-    EnemyAttack _enemyAttack; // 攻击组件引用
+    EnemyAttack _enemyAttack;
 
     [Header("AI属性")]
     [Tooltip("是否找到玩家")]
