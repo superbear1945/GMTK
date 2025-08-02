@@ -9,25 +9,28 @@ namespace EnemyAi
 {
     public enum EnemyState
     {
-        Idle,
-        Patrol,
-        Chase
+        Idle,       // 闲置状态
+        Patrol,     // 巡逻状态
+        Chase,      // 追逐状态
+        Attack      // 攻击状态
     }
 }
+
 
 public class EnemyAI : MonoBehaviour
 {
     [Header("AI状态")]
     public EnemyState currentState;
-    
+
     [Header("AI组件")]
     AIPath _aiPath;
     AIDestinationSetter _destinationSetter;
+    EnemyAttack _enemyAttack; // 攻击组件引用
 
     [Header("AI属性")]
     [Tooltip("是否找到玩家")]
     public bool isFindPlayer = false;
-    
+
     [Header("巡逻设置")]
     [Tooltip("巡逻半径")]
     public float patrolRadius = 5f;
@@ -54,19 +57,47 @@ public class EnemyAI : MonoBehaviour
     {
         _aiPath = GetComponent<AIPath>();
         _destinationSetter = GetComponent<AIDestinationSetter>();
+        _enemyAttack = GetComponent<EnemyAttack>();
 
         if (_aiPath == null)
             Debug.LogError("No AIPath Component On " + gameObject.name);
         if (_destinationSetter == null)
             Debug.LogError("No AIDestinationSetter Component On " + gameObject.name);
+        if (_enemyAttack == null)
+            Debug.LogError("No EnemyAttack Component On " + gameObject.name);
     }
 
     void Start()
     {
         currentState = EnemyState.Idle;
         initialPosition = transform.position; // 记录初始位置
+
+        // 订阅攻击事件
+        if (_enemyAttack != null)
+        {
+            _enemyAttack.OnAttackStart += OnAttackStarted;
+            _enemyAttack.OnAttackEnd += OnAttackEnded;
+            _enemyAttack.OnDamageDealt += OnDamageDealt;
+        }
     }
-    
+
+    void OnDestroy()
+    {
+        // 取消攻击事件订阅
+        if (_enemyAttack != null)
+        {
+            _enemyAttack.OnAttackStart -= OnAttackStarted;
+            _enemyAttack.OnAttackEnd -= OnAttackEnded;
+            _enemyAttack.OnDamageDealt -= OnDamageDealt;
+        }
+
+        // 清理巡逻目标对象
+        if (currentPatrolTargetObject != null)
+        {
+            Destroy(currentPatrolTargetObject);
+        }
+    }
+
     void Update()
     {
         SwitchState();
@@ -85,10 +116,61 @@ public class EnemyAI : MonoBehaviour
             case EnemyState.Chase:
                 OnChase();
                 break;
+            case EnemyState.Attack:
+                OnAttack();
+                break;
             default:
                 Debug.LogError("未知的敌人状态: " + currentState);
                 break;
         }
+    }
+
+    private void OnAttack()
+    {
+        if (!isFindPlayer || Player.Instance == null)
+        {
+            // 如果失去玩家目标，返回闲置状态
+            _enemyAttack.StopAttack();
+            currentState = EnemyState.Idle;
+            return;
+        }
+
+        // 如果玩家离得太远，切换回追逐状态
+        if (!_enemyAttack.IsInAttackRange())
+        {
+            _enemyAttack.StopAttack();
+            currentState = EnemyState.Chase;
+            return;
+        }
+
+        // 停止移动，准备攻击
+        _aiPath.canMove = false;
+        _destinationSetter.target = null;
+
+        // 面向玩家
+        _enemyAttack.FaceTarget();
+
+        // 执行攻击
+        if (_enemyAttack.CanAttack())
+        {
+            _enemyAttack.StartAttack();
+        }
+    }
+
+    // 攻击事件回调
+    private void OnAttackStarted()
+    {
+        Debug.Log($"{gameObject.name} AI: 攻击开始");
+    }
+
+    private void OnAttackEnded()
+    {
+        Debug.Log($"{gameObject.name} AI: 攻击结束");
+    }
+
+    private void OnDamageDealt(int damage)
+    {
+        Debug.Log($"{gameObject.name} AI: 造成了 {damage} 点伤害");
     }
 
     private void OnIdle()
@@ -113,12 +195,12 @@ public class EnemyAI : MonoBehaviour
     {
         isIdling = true;
         yield return new WaitForSeconds(idleTime);
-        
+
         if (currentState == EnemyState.Idle && !isFindPlayer)
         {
             currentState = EnemyState.Patrol;
         }
-        
+
         isIdling = false;
     }
 
@@ -148,15 +230,15 @@ public class EnemyAI : MonoBehaviour
         {
             // 寻找有效的巡逻点
             Vector3 validPatrolPoint = GetValidPatrolPoint();
-            
+
             if (validPatrolPoint != Vector3.zero)
             {
                 // 设置巡逻目标
                 SetPatrolTarget(validPatrolPoint);
-                
+
                 // 等待到达目标点
                 yield return StartCoroutine(WaitForReachTarget(validPatrolPoint));
-                
+
                 // 到达后等待一段时间
                 yield return new WaitForSeconds(patrolWaitTime);
             }
@@ -173,20 +255,20 @@ public class EnemyAI : MonoBehaviour
     private Vector3 GetValidPatrolPoint()
     {
         int maxAttempts = 10;
-        
+
         for (int i = 0; i < maxAttempts; i++)
         {
             // 在圆形范围内生成随机点（以初始位置为中心）
             Vector2 randomDirection = UnityEngine.Random.insideUnitCircle * patrolRadius;
             Vector3 targetPoint = initialPosition + new Vector3(randomDirection.x, randomDirection.y, 0);
-            
+
             // 检查该点是否可达
             if (IsValidPatrolPoint(targetPoint))
             {
                 return targetPoint;
             }
         }
-        
+
         return Vector3.zero; // 表示没有找到有效点
     }
 
@@ -194,39 +276,39 @@ public class EnemyAI : MonoBehaviour
     {
         // 检查A*寻路是否可达该点
         if (AstarPath.active == null) return true; // 如果没有A*图，假设可达
-        
+
         NNInfo nearestInfo = AstarPath.active.GetNearest(point);
         if (nearestInfo.node == null || !nearestInfo.node.Walkable)
         {
             return false;
         }
-        
+
         // 检查距离是否合理
         if (Vector3.Distance(nearestInfo.position, point) > 2f)
         {
             return false;
         }
-        
+
         // 检查从当前位置是否可达
         NNInfo startInfo = AstarPath.active.GetNearest(transform.position);
         if (startInfo.node == null || !startInfo.node.Walkable)
         {
             return false;
         }
-        
+
         return PathUtilities.IsPathPossible(startInfo.node, nearestInfo.node);
     }
 
     private void SetPatrolTarget(Vector3 targetPosition)
     {
         currentPatrolTarget = targetPosition;
-        
+
         // 清理之前的目标对象
         if (currentPatrolTargetObject != null)
         {
             Destroy(currentPatrolTargetObject);
         }
-        
+
         // 创建新的巡逻目标
         currentPatrolTargetObject = new GameObject($"PatrolTarget_{gameObject.name}");
         currentPatrolTargetObject.transform.position = targetPosition;
@@ -237,16 +319,16 @@ public class EnemyAI : MonoBehaviour
     {
         float timeout = 10f; // 超时时间，避免AI卡住
         float elapsed = 0f;
-        
+
         while (elapsed < timeout && currentState == EnemyState.Patrol && !isFindPlayer)
         {
             float distance = Vector3.Distance(transform.position, targetPosition);
-            
+
             if (distance <= reachDistance)
             {
                 break; // 到达目标点
             }
-            
+
             elapsed += Time.deltaTime;
             yield return null;
         }
@@ -268,6 +350,14 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
+        // 检查是否进入攻击范围
+        if (_enemyAttack.IsInAttackRange())
+        {
+            // 进入攻击状态
+            currentState = EnemyState.Attack;
+            return;
+        }
+
         _aiPath.canMove = true;
         _destinationSetter.target = Player.Instance.transform;
     }
@@ -279,7 +369,7 @@ public class EnemyAI : MonoBehaviour
             Destroy(currentPatrolTargetObject);
             currentPatrolTargetObject = null;
         }
-        
+
         StopAllCoroutines();
         isPatrolling = false;
         isIdling = false;
@@ -296,12 +386,5 @@ public class EnemyAI : MonoBehaviour
         isFindPlayer = found;
     }
 
-    void OnDestroy()
-    {
-        // 清理巡逻目标对象
-        if (currentPatrolTargetObject != null)
-        {
-            Destroy(currentPatrolTargetObject);
-        }
-    }
+    
 }
