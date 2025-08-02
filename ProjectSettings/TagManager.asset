@@ -8,6 +8,7 @@ TagManager:
   - Obstacle
   - Bullet
   - SpawnPoint
+  - MainCanvas
   layers:
   - Default
   - TransparentFX
