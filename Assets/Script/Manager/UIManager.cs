@@ -50,7 +50,6 @@ public class UIManager : MonoBehaviour
         // 更新UI显示
         armCountText.text = $"X{Player.Instance.armCount}";
         legCountText.text = $"X{Player.Instance.legCount}";
-        Debug.Log(armCountText.text);
     }
 
     //单例模式实现
@@ -63,7 +62,6 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"已存在UIManager实例，销毁重复的对象: {gameObject.name}");
             Destroy(gameObject);
         }
     }
