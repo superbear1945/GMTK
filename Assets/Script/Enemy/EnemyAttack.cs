@@ -215,7 +215,7 @@ public class EnemyAttack : MonoBehaviour
         // 触发击中玩家事件
         OnPlayerHit?.Invoke();
         
-        // 直接结束游戏
+        // 重新开启关卡
         if (GameManager.Instance != null)
             GameManager.Instance.RestartLevel();
     }
