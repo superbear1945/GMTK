@@ -306,6 +306,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  oneLegSpeedMultiplier: 0.5
+  noLegSpeedMultiplier: 0.25
 --- !u!114 &3776010139444157497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -349,8 +351,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   armCount: 2
   legCount: 2
-  leftArmTransform: {fileID: 6032398465391529154}
-  rightArmTransform: {fileID: 8428997358536623033}
+  leftArm: {fileID: 5148805224460617118}
+  rightArm: {fileID: 1932920639619617344}
   isMove: 0
 --- !u!95 &186176950015663734
 Animator:
