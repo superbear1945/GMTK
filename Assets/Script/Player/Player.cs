@@ -33,10 +33,29 @@ public class Player : MonoBehaviour
             Debug.LogWarning($"已存在Player实例，销毁重复的对象: {gameObject.name}");
             Destroy(gameObject);
         }
-
-        if(leftArm == null || rightArm == null)
+        
+        // 如果 Inspector 中没有手动赋值，则通过子对象名称查找
+        if (leftArm == null)
         {
-            Debug.LogError("请在Player组件中设置左手和右手的Transform引用");
+            Transform armTransform = transform.Find("ArmLeft");
+            if (armTransform != null)
+            {
+                leftArm = armTransform.gameObject;
+            }
+        }
+
+        if (rightArm == null)
+        {
+            Transform armTransform = transform.Find("ArmRight");
+            if (armTransform != null)
+            {
+                rightArm = armTransform.gameObject;
+            }
+        }
+
+        if (leftArm == null || rightArm == null)
+        {
+            Debug.LogError("Player子对象中未找到代表两只手的对象");
         }
     }
     

@@ -60,12 +60,12 @@ public class Shoot : MonoBehaviour
             if (Player.Instance.armCount == 2) //发射左手
             {
                 isLeft = true; // 设置为左侧发射
-                //Player.Instance.leftArm.SetActive(false); // 隐藏射出的左手
+                Player.Instance.leftArm.SetActive(false); // 隐藏射出的左手
             }
             else if (Player.Instance.armCount == 1) //发射右手
             {
                 isLeft = false; // 设置为右侧发射
-                //Player.Instance.rightArm.SetActive(false); // 隐藏射出的右手
+                Player.Instance.rightArm.SetActive(false); // 隐藏射出的右手
             }
             else
             {
