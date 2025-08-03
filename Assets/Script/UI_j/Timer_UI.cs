@@ -12,6 +12,31 @@ public class Timer_UI : MonoBehaviour
     void Start()
     {
         time = GetComponent<TMP_Text>();
+        _currentTime = _totalTime;
+    }
+
+    void Update()
+    {
+        _currentTime -= Time.deltaTime;
+
+        if (_currentTime <= 0f)
+        {
+            _currentTime = 0f;
+            TimerCompleted();
+        }
+
+        UpdateDisplay();
+    }
+
+    void UpdateDisplay()
+    {
+        time.text = $"Time: {_currentTime:F2}"; // 保留两位小数
+    }
+
+    void TimerCompleted()
+    {
+        // 计时器完成时的逻辑
+        GameManager.Instance.RestartLevel();
     }
 
 }
