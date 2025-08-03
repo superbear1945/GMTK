@@ -217,7 +217,7 @@ public class EnemyAttack : MonoBehaviour
         
         // 直接结束游戏
         if (GameManager.Instance != null)
-            GameManager.Instance.GameEnd();
+            GameManager.Instance.RestartLevel();
     }
 
     /// <summary>

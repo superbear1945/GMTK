@@ -30,10 +30,9 @@ public class Player : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"已存在Player实例，销毁重复的对象: {gameObject.name}");
             Destroy(gameObject);
         }
-        
+
         // 如果 Inspector 中没有手动赋值，则通过子对象名称查找
         if (leftArm == null)
         {
@@ -58,14 +57,14 @@ public class Player : MonoBehaviour
             Debug.LogError("Player子对象中未找到代表两只手的对象");
         }
     }
-    
+
     // 状态检查方法（这些有必要，因为涉及游戏逻辑）
     public bool CanShoot() => armCount > 0 || legCount > 0;
     public bool CanMove() => legCount > 0;
-    
+
     // 弹药管理方法，包括肢体的使用和回收
     public void ConsumeArm() { if (armCount > 0) armCount--; }
-    
+
     public void ConsumeLeg() { if (legCount > 0) legCount--; }
 
     public void AddArm() { if (armCount < 2) armCount++; }
@@ -74,5 +73,14 @@ public class Player : MonoBehaviour
     private void OnDestroy()
     {
         if (Instance == this) Instance = null;
+    }
+    
+    public void ResetPlayer()
+    {
+        armCount = 2;
+        legCount = 2;
+        leftArm.SetActive(true);
+        rightArm.SetActive(true);
+        isMove = false;
     }
 }

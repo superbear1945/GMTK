@@ -340,7 +340,7 @@ MonoBehaviour:
   attackPostDelay: 0.2
   playerLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   attackBoxSize: {x: 1.5, y: 1}
   forwardOffset: 0.5
   rightOffset: 0

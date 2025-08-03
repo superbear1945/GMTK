@@ -26,10 +26,29 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void GameEnd()
+    //游戏重开时调用，例如在菜单中选择了重新开始
+    public void RestartGame()
     {
         SceneManager.LoadScene("SampleScene");
         CurrentPlayer.transform.position = spawnPoint.position; // 重置玩家位置到生成点
+        Player.Instance.ResetPlayer(); // 重置玩家状态
+        UIManager.Instance.UpdateCountUI(); // 更新UI显示
+    }
+
+
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // 重新加载当前场景
+        if (spawnPoint != null)
+        {
+            CurrentPlayer.transform.position = spawnPoint.position; // 重置玩家位置到生成点
+            Player.Instance.ResetPlayer(); // 重置玩家状态
+            UIManager.Instance.UpdateCountUI(); // 更新UI显示
+        }
+        else
+        {
+            Debug.LogError("Spawn Point未设置，请在场景中放置SpawnPoint对象");
+        }
     }
 
     private void Awake()
