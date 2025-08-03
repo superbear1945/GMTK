@@ -45,6 +45,13 @@ public class EnemyAI : MonoBehaviour
     [SerializeField, Tooltip("是否正在闲置中")]
     private bool isIdling = false;
 
+    [SerializeField, Tooltip("是否开启Gizmos绘制")]
+    bool enableGizmos = true;
+    [SerializeField, Tooltip("巡逻范围颜色")]
+    Color patrolAreaColor = Color.yellow;
+    [SerializeField, Tooltip("巡逻目标点颜色")]
+    Color patrolTargetColor = Color.red;
+
     // 私有变量
     private GameObject currentPatrolTargetObject;
     private Vector3 initialPosition; // 记录初始位置作为巡逻中心点
@@ -383,5 +390,23 @@ public class EnemyAI : MonoBehaviour
         isFindPlayer = found;
     }
 
-    
+    void OnDrawGizmos()
+    {
+        if(!enableGizmos) return;
+        // 绘制巡逻范围
+        Gizmos.color = patrolAreaColor;
+        Vector3 center = Application.isPlaying ? initialPosition : transform.position;
+        Gizmos.DrawWireSphere(center, patrolRadius);
+
+        // 绘制当前巡逻目标点
+        if (Application.isPlaying && currentPatrolTarget != Vector3.zero)
+        {
+            Gizmos.color = patrolTargetColor;
+            Gizmos.DrawWireSphere(currentPatrolTarget, 0.5f);
+            
+            // 绘制从当前位置到巡逻目标的连线
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(transform.position, currentPatrolTarget);
+        }
+    }
 }
