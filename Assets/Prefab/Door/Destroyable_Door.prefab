@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 1519765549933117623}
   - component: {fileID: 3536248850022966489}
   - component: {fileID: 8404967017122225954}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Destroyable_Door
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
