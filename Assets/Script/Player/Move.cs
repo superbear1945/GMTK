@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,7 +9,16 @@ public class Move : MonoBehaviour
     PlayerInput _playerInput;
     InputAction _moveAction;
     Rigidbody2D _rb2d;
+
+    [Header("移动设置")]
+    [Tooltip("角色移动速度")]
     public float speed = 5f;
+
+    [Tooltip("只有一条腿时的移动速度倍率")]
+    public float oneLegSpeedMultiplier = 0.5f;
+
+    [Tooltip("没有腿时的移动速度倍率")]
+    public float noLegSpeedMultiplier = 0.25f;
 
     void Awake()
     {
@@ -41,7 +51,21 @@ public class Move : MonoBehaviour
         {
             Player.Instance.isMove = false; // 停止移动时重置状态
         }
-        _rb2d.MovePosition(_rb2d.position + moveDirection * Time.fixedDeltaTime * speed);
+
+        switch (Player.Instance.legCount)
+        {
+            case 2:
+                _rb2d.MovePosition(_rb2d.position + moveDirection * Time.fixedDeltaTime * speed);
+                break;
+            case 1:
+                // 如果只有一条腿，移动速度减半
+                _rb2d.MovePosition(_rb2d.position + moveDirection * Time.fixedDeltaTime * speed * oneLegSpeedMultiplier);
+                break;
+            default:
+                // 没有腿时移动速度四分之一
+                _rb2d.MovePosition(_rb2d.position + moveDirection * Time.fixedDeltaTime * speed * noLegSpeedMultiplier);
+                break;
+        }
     }
 
 }
