@@ -12,8 +12,8 @@ public class Player : MonoBehaviour
     [Header("玩家属性")]
     public int armCount = 2;
     public int legCount = 2;
-    public Transform leftArmTransform;
-    public Transform rightArmTransform;
+    public GameObject leftArm;
+    public GameObject rightArm;
 
     // 便捷属性
     public Vector3 Position => transform.position;
@@ -33,8 +33,8 @@ public class Player : MonoBehaviour
             Debug.LogWarning($"已存在Player实例，销毁重复的对象: {gameObject.name}");
             Destroy(gameObject);
         }
-        
-        if(leftArmTransform == null || rightArmTransform == null)
+
+        if(leftArm == null || rightArm == null)
         {
             Debug.LogError("请在Player组件中设置左手和右手的Transform引用");
         }

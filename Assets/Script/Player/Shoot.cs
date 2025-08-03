@@ -60,10 +60,12 @@ public class Shoot : MonoBehaviour
             if (Player.Instance.armCount == 2) //发射左手
             {
                 isLeft = true; // 设置为左侧发射
+                //Player.Instance.leftArm.SetActive(false); // 隐藏射出的左手
             }
             else if (Player.Instance.armCount == 1) //发射右手
             {
                 isLeft = false; // 设置为右侧发射
+                //Player.Instance.rightArm.SetActive(false); // 隐藏射出的右手
             }
             else
             {
@@ -94,9 +96,9 @@ public class Shoot : MonoBehaviour
         //根据isLeft判断从左侧还是右侧发射肢体
         Vector2 startPosition = GameManager.CurrentPlayer.transform.position; //肢体发射位置，默认为玩家位置
         if(isLeft)
-            startPosition = Player.Instance.leftArmTransform.position; //从左侧发射
+            startPosition = Player.Instance.leftArm.transform.position; //从左侧发射
         else
-            startPosition = Player.Instance.rightArmTransform.position; //从右侧发射
+            startPosition = Player.Instance.rightArm.transform.position; //从右侧发射
 
         //发射方向为鼠标与身体左侧或者右侧连线
         Vector2 direction = (GameManager.Instance.mousePosition - startPosition).normalized; // 计算发射方向
